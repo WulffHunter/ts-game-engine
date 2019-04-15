@@ -1,0 +1,20 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "Jared Rand's personal portfolio website",
+  "main": "index.js",
+  "scripts": {
+    "build": "parcel index.html",
+    "clean": "rm -rf build",
+    "start": "webpack-serve",
+    "fmt": "prettier '**/*.{ts,tsx}' --write"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "parcel-bundler": "^1.12.3"
+  },
+  "devDependencies": {
+    "typescript": "^3.4.3"
+  }
+}
