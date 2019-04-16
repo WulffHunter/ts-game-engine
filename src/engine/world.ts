@@ -1,4 +1,11 @@
-import { Component, ComponentType } from 'engine/component'
+import { Component } from 'engine/component'
+import {
+  InputSystem,
+  StepSystem,
+  RenderSystem,
+  SystemType,
+  System,
+} from 'engine/system'
 
 // export const world = () => {
 // 	return {
@@ -37,19 +44,34 @@ import { Component, ComponentType } from 'engine/component'
 // 	}
 // }
 
-export class World {
+interface SystemMap<T> {
+  [ SystemType.INPUT ]: Array<InputSystem<T>>
+  [ SystemType.STEP ]: Array<StepSystem<T>>
+  [ SystemType.RENDER ]: Array<RenderSystem<T>>
+}
+
+export class World<C> {
   // An incrementer to ensure every entity has a unique id
   entityIncrementer: number
 
   // A map of all the components in their storage
-  components: Record<ComponentType, Array<Component>>
+  components: Partial<Record<C, Array<Component<C>>>>
+  systems: SystemMap<C>
 
   constructor() {
     this.entityIncrementer = 0
+
     this.components = {}
+
+    this.systems = {
+      [ SystemType.INPUT ]: [],
+      [ SystemType.STEP ]: [],
+      [ SystemType.RENDER ]: [],
+    }
   }
 
-  add(boundEntity: Array<Component>) {
+  add(boundEntity: Array<Component<C>>): World {
+    // Add all the new components to the world
     boundEntity.forEach(c => {
       const ctype = c.getType()
 
@@ -62,6 +84,23 @@ export class World {
       // Add the component into the index of the current entity
       this.components[ctype][this.entityIncrementer] = c
     })
+
+    // Increment the amount of entities that have been used
     this.entityIncrementer++
+
+    // Make the function chainable
+    return this
+  }
+
+  // Ads a system to a world. Must be done in-order.
+  bindSystem(type: SystemType, system: System<T>): World {
+    this.systems[type].push(system)
+
+    // Make it chainable
+    return this
+  }
+
+  executeSystems(type: SystemType) {
+
   }
 }

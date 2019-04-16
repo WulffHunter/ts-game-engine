@@ -1,21 +1,32 @@
-import { Component, ComponentType } from 'engine/component'
+import { Component } from 'engine/component'
 
-enum SystemType {
-  
+type ComponentsMap = Partial<Record<T, Array<Component<T>>>>
+
+export enum SystemType {
+  INPUT,
+  STEP,
+  RENDER,
 }
 
-export const createSystem = (
-  t: SystemType,
-  requiredComponents: Array<ComponentType>,
-  system: (...components: Array<Component>) => void,
-): System => ({
-  type: t,
-  requiredComponents,
-  system,
-})
-
-export interface System {
-  type: SystemType
-  requiredComponents: Array<ComponentType>,
-  system: (...components: Array<Component>) => void,
+export type InputSystem<T> = {
+  type: SystemType.INPUT
+  requiredComponents: Array<T>,
+  system: (components: ComponentsMap, inputEvent: {}) => void,
 }
+
+export type StepSystem<T> = {
+  type: SystemType.STEP
+  requiredComponents: Array<T>,
+  system: (components: ComponentsMap) => void,
+}
+
+export type RenderSystem<T> = {
+  type: SystemType.RENDER
+  requiredComponents: Array<T>,
+  system: (components: ComponentsMap, timeElapsed: number) => void,
+}
+
+export type System<T> =
+  | InputSystem<T>
+  | StepSystem<T>
+  | RenderSystem<T>

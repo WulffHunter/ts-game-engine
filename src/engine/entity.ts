@@ -1,18 +1,18 @@
 import { Component } from 'engine/component'
 
-export class Entity {
-  components: Array<Component> = []
+export class Entity<T> {
+  components: Array<Component<T>> = []
 
   constructor() {
     this.components = []
   }
 
-  with<C extends Component>(component: C): Entity {
+  with<C extends Component<T>>(component: C): Entity {
     this.components.push(component)
     return this
   }
 
-  bind(): Array<Component> {
+  bind(): Array<Component<T>> {
     return this.components
   }
 }

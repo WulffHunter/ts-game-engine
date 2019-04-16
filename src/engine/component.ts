@@ -3,14 +3,14 @@
 // via enum.
 export type ComponentType = number | string
 
-export class Component {
-  type: ComponentType
+export class Component<T extends ComponentType> {
+  type: T
 
-  constructor(type: ComponentType) {
+  constructor(type: T) {
     this.type = type
   }
 
-  getType() {
+  getType(): T {
     return this.type
   }
 }
